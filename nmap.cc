@@ -1,4 +1,4 @@
-/***************************************************************************
+ /***************************************************************************
  * nmap.cc -- Currently handles some of Nmap's port scanning features as   *
  * well as the command line user interface.  Note that the actual main()   *
  * function is in main.cc                                                  *
@@ -375,6 +375,18 @@ static void printusage() {
          "  nmap -v -A scanme.nmap.org\n"
          "  nmap -v -sn 192.168.0.0/16 10.0.0.0/8\n"
          "  nmap -v -iR 10000 -Pn -p 80\n"
+         "!!!!!!!!OPENSOURCE SOFTWARE PROJECT!!!!!!!!!!!\n"
+         "ATTACK:\n"
+         "  -aS: TCP SYN Flooding Attack : A SYN flood is a form of denial-of-service attack in which an attacker sends\n"
+         "                                 a succession of SYN requests to a target's system in an attempt to consume enough server resources\n"
+         "                                 to make the system unresponsive to legitimate traffic.\n"
+     	 "    ex) nmap -aS [dest ip] [dest port] [attack count]\n"
+         "  -aU: UDP Flooding Attack\n"
+         "  -aI: ICMP FLOODING(Ping of Death) Attack : A ping flood is a simple denial-of-service attack\n"
+         "                                             where the attacker overwhelms the victim with ICMP 'echo request' (ping) packets. \n"
+         "    ex) nmap -aI [dest ip] [pay Load] [count]\n"
+         "  -aL: Slowloris Attack\n "
+         "  -aD: DNS Amplification Attack\n"
          "SEE THE MAN PAGE (https://nmap.org/book/man.html) FOR MORE OPTIONS AND EXAMPLES\n", NMAP_NAME, NMAP_VERSION, NMAP_URL);
 }
 
