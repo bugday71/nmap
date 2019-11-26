@@ -446,9 +446,9 @@ administrator privileges.";
     //    if (verbose) error("No TCP, UDP, SCTP or ICMP scantype specified, assuming %s scan. Use -sn if you really don't want to portscan (and just want to see what hosts are up).", synscan? "SYN Stealth" : "vanilla tcp connect()");
   }
 
-  if (pingtype != PINGTYPE_NONE && spoofsource) {
+  /*if (pingtype != PINGTYPE_NONE && spoofsource) {
     error("WARNING: If -S is being used to fake your source address, you may also have to use -e <interface> and -Pn .  If you are using it to specify your real source address, you can ignore this warning.");
-  }
+  }*/
 
   if (pingtype != PINGTYPE_NONE && idlescan) {
     error("WARNING: Many people use -Pn w/Idlescan to prevent pings from their true IP.  On the other hand, timing info Nmap gains from pings can allow for faster, more reliable scans.");

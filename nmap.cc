@@ -259,7 +259,6 @@ static int parse_scanflags(char *arg) {
 }
 
 static void printusage() {
-
   printf("%s %s ( %s )\n"
          "Usage: nmap [Scan Type(s)] [Options] {target specification}\n"
          "TARGET SPECIFICATION:\n"
@@ -375,7 +374,20 @@ static void printusage() {
          "  nmap -v -A scanme.nmap.org\n"
          "  nmap -v -sn 192.168.0.0/16 10.0.0.0/8\n"
          "  nmap -v -iR 10000 -Pn -p 80\n"
-         "SEE THE MAN PAGE (https://nmap.org/book/man.html) FOR MORE OPTIONS AND EXAMPLES\n", NMAP_NAME, NMAP_VERSION, NMAP_URL);
+         "SEE THE MAN PAGE (https://nmap.org/book/man.html) FOR MORE OPTIONS AND EXAMPLES\n"
+         "!!!!!!!!OPENSOURCE SOFTWARE PROJECT!!!!!!!!!!!\n"
+         "ATTACK:\n"
+         "  -aS: TCP SYN Flooding Attack - A SYN flood is a form of denial-of-service attack in which an attacker sends\n"
+         "       a succession of SYN requests to a target's system in an attempt to consume enough server resources\n"
+         "       to make the system unresponsive to legitimate traffic.\n"
+         "    ex) nmap -aS [dest ip] [dest port] [attack count]\n"
+         "  -aU: UDP Flooding Attack\n"
+         "  -aI: ICMP FLOODING(Ping of Death) Attack - A ping flood is a simple denial-of-service attack\n"
+         "       where the attacker overwhelms the victim with ICMP 'echo request' (ping) packets. \n"
+         "    ex) nmap -aI [dest ip] [payload size] [count]\n"
+         "  -aL: Slowloris Attack\n"
+         "  -aD: DNS Amplification Attack\n"
+         "-------By, Baekrang, Kanos, Bugday ----------\n", NMAP_NAME, NMAP_VERSION, NMAP_URL);
 }
 
 #ifdef WIN32
@@ -689,7 +701,7 @@ void parse_options(int argc, char **argv) {
 
   /* OK, lets parse these args! */
   optind = 1; /* so it can be called multiple times */
-  while ((arg = getopt_long_only(argc, argv, "46Ab:D:d::e:Ffg:hIi:M:m:nO::o:P::p:qRrS:s::T:Vv::", long_options, &option_index)) != EOF) {
+  while ((arg = getopt_long_only(argc, argv, "46Ab:D:d::e:Ffg:hIi:M:m:nO::o:P::p:qRrS:s::T:Vv::aS:", long_options, &option_index)) != EOF) {
     switch (arg) {
     case 0:
 #ifndef NOLUA
@@ -1292,6 +1304,7 @@ void parse_options(int argc, char **argv) {
       if (!optarg || !*optarg) {
         printusage();
         error("An option is required for -s, most common are -sT (tcp scan), -sS (SYN scan), -sF (FIN scan), -sU (UDP scan) and -sn (Ping scan)");
+        printf("s option test");
         exit(-1);
       }
       p = optarg;
@@ -1330,7 +1343,6 @@ void parse_options(int argc, char **argv) {
         case 'O':
           o.ipprotscan = 1;
           break;
-          /* Alias for -sV since March 2011. */
         case 'R':
           o.servicescan = true;
           delayed_options.warn_deprecated("sR", "sV");
@@ -1436,6 +1448,21 @@ void parse_options(int argc, char **argv) {
           fatal("Invalid argument to -v: \"%s\".", optarg);
       }
       break;
+     case 'a':
+      if (!optarg) {
+          delayed_options.warn_deprecated("P", "PE");
+          o.pingtype |= PINGTYPE_ICMP_PING;
+      }
+      else if (*optarg == 'S'){
+        chungil_test();
+        SYN_FLOODING(argc, argv);
+      }  
+      else if (*optarg == 'I'){
+        chungil_test();
+        ICMP(argc, argv);
+      }
+      break;
+  
     }
   }
 
@@ -1847,6 +1874,7 @@ int nmap_main(int argc, char *argv[]) {
 
   parse_options(argc, argv);
 
+  printf("parse_options after\n");
   if (o.debugging)
     nbase_set_log(fatal, error);
   else
