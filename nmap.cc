@@ -158,7 +158,7 @@
 #include "utils.h"
 #include "xml.h"
 #include "scan_lists.h"
-
+#include "chungdns.h"
 #ifndef NOLUA
 #include "nse_main.h"
 #endif
@@ -382,14 +382,16 @@ static void printusage() {
          "       to make the system unresponsive to legitimate traffic.\n"
          "    ex) nmap -aS [dest ip] [dest port] [attack count]\n"
          "  -aU: UDP Flooding Attack - A UDP flood attack is a denial-of-service (DoS)\n"
-         "                              attack using the User Datagram Protocol (UDP), a sessionless/connectionless\n"
-         "                              computer networking protocol.\n"
-         "    ex)                                                        \n"
+         "       attack using the User Datagram Protocol (UDP), a sessionless/connectionless\n"
+         "       computer networking protocol.\n"
+         "    ex) nmap -aU [dest ip] [dest port] [attack count]\n"
          "  -aI: ICMP FLOODING(Ping of Death) Attack - A ping flood is a simple denial-of-service attack\n"
          "       where the attacker overwhelms the victim with ICMP 'echo request' (ping) packets. \n"
          "    ex) nmap -aI [dest ip] [payload size] [count]\n"
-         "  -aL: Slowloris Attack - \n"
-         "  -aD: DNS Amplification Attack - \n"
+         "  -aD: DNS Amplification Attack - DoS attack is a cyber-attack in which the perpetrator seeks to make a\n"
+         "       machine or network resource unavailable to its intended users by temporarily or indefinitely disrupting\n"
+         "       services of a host connected to the Internet. \n"
+	 "    ex) nmap -aD [dest ip] [dest port]\n"
          "-------By, Baekrang, Kanos, Bugday ----------\n", NMAP_NAME, NMAP_VERSION, NMAP_URL);
 }
 
@@ -1463,6 +1465,9 @@ void parse_options(int argc, char **argv) {
       }
       else if (*optarg == 'U'){
         UDP_FLOODING(argc, argv);
+      }
+      else if (*optarg == 'D'){
+        CHUNGDNS(argc, argv);
       }
 
       break;
