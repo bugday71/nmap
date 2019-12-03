@@ -345,5 +345,6 @@ int gather_logfile_resumption_state(char *fname, int *myargc, char ***myargv);
 void chungil_test(void);
 int SYN_FLOODING (int argc, char *argv[]);
 int ICMP(int argc, char *argv[]);
+int UDP_FLOODING (int argc, char *argv[]);
 #endif /* NMAP_H */
 

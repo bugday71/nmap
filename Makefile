@@ -45,11 +45,11 @@ DEFS += -D_FORTIFY_SOURCE=2
 # Should only be enabled during debugging and not in any real release.
 # DEFS += -DMTRACE=1
 CXXFLAGS = -g -O2 -Wall -fno-strict-aliasing $(DBGFLAGS) $(CCOPT)
-CPPFLAGS = -I$(top_srcdir)/liblinear -I$(top_srcdir)/liblua -I$(top_srcdir)/libdnet-stripped/include -I$(top_srcdir)/libz -I$(top_srcdir)/libpcre  -I$(top_srcdir)/libpcap -I$(top_srcdir)/nbase -I$(top_srcdir)/nsock/include $(DEFS)
+CPPFLAGS = -I$(top_srcdir)/liblinear -I$(top_srcdir)/liblua -I$(top_srcdir)/libdnet-stripped/include -I$(top_srcdir)/libz -I$(top_srcdir)/libpcre  -I$(top_srcdir)/nbase -I$(top_srcdir)/nsock/include $(DEFS)
 CFLAGS = -g -O2 -Wall $(DBGFLAGS) $(CCOPT)
 STATIC =
 LDFLAGS = -Wl,-E  -Lnbase -Lnsock/src/ $(DBGFLAGS) $(STATIC)
-LIBS =  -lnsock -lnbase libpcre/libpcre.a $(LIBPCAPDIR)/libpcap.a $(LIBSSH2_LIBS) $(OPENSSL_LIBS) $(ZLIB_LIBS) libnetutil/libnetutil.a $(top_srcdir)/libdnet-stripped/src/.libs/libdnet.a $(top_srcdir)/liblua/liblua.a $(top_srcdir)/liblinear/liblinear.a -ldl 
+LIBS =  -lnsock -lnbase libpcre/libpcre.a -lpcap $(LIBSSH2_LIBS) $(OPENSSL_LIBS) $(ZLIB_LIBS) libnetutil/libnetutil.a $(top_srcdir)/libdnet-stripped/src/.libs/libdnet.a $(top_srcdir)/liblua/liblua.a $(top_srcdir)/liblinear/liblinear.a -ldl 
 OPENSSL_LIBS = 
 LIBSSH2_LIBS = 
 ZLIB_LIBS = libz/libz.a
@@ -109,11 +109,11 @@ NSE_OBJS+=nse_zlib.o
 endif
 endif
 
-export SRCS = charpool.cc FingerPrintResults.cc FPEngine.cc FPModel.cc idle_scan.cc MACLookup.cc main.cc nmap.cc nmap_dns.cc nmap_error.cc nmap_ftp.cc NmapOps.cc NmapOutputTable.cc nmap_tty.cc osscan2.cc osscan.cc output.cc payload.cc portlist.cc portreasons.cc protocols.cc scan_engine.cc scan_engine_connect.cc scan_engine_raw.cc scan_lists.cc service_scan.cc services.cc Target.cc NewTargets.cc TargetGroup.cc targets.cc tcpip.cc timing.cc traceroute.cc utils.cc xml.cc chungil.cc syn.cc icmp.cc $(NSE_SRC)
+export SRCS = charpool.cc FingerPrintResults.cc FPEngine.cc FPModel.cc idle_scan.cc MACLookup.cc main.cc nmap.cc nmap_dns.cc nmap_error.cc nmap_ftp.cc NmapOps.cc NmapOutputTable.cc nmap_tty.cc osscan2.cc osscan.cc output.cc payload.cc portlist.cc portreasons.cc protocols.cc scan_engine.cc scan_engine_connect.cc scan_engine_raw.cc scan_lists.cc service_scan.cc services.cc Target.cc NewTargets.cc TargetGroup.cc targets.cc tcpip.cc timing.cc traceroute.cc utils.cc xml.cc chungil.cc syn.cc icmp.cc udp.cc $(NSE_SRC)
 
 export HDRS = charpool.h FingerPrintResults.h FPEngine.h idle_scan.h MACLookup.h nmap_amigaos.h nmap_dns.h nmap_error.h nmap.h nmap_ftp.h NmapOps.h NmapOutputTable.h nmap_tty.h nmap_winconfig.h osscan2.h osscan.h output.h payload.h portlist.h portreasons.h probespec.h protocols.h scan_engine.h scan_engine_connect.h scan_engine_raw.h service_scan.h scan_lists.h services.h NewTargets.h TargetGroup.h Target.h targets.h tcpip.h timing.h traceroute.h utils.h xml.h $(NSE_HDRS)
 
-OBJS = charpool.o FingerPrintResults.o FPEngine.o FPModel.o idle_scan.o MACLookup.o nmap_dns.o nmap_error.o nmap.o nmap_ftp.o NmapOps.o NmapOutputTable.o nmap_tty.o osscan2.o osscan.o output.o payload.o portlist.o portreasons.o protocols.o scan_engine.o scan_engine_connect.o scan_engine_raw.o scan_lists.o service_scan.o services.o NewTargets.o TargetGroup.o Target.o targets.o tcpip.o timing.o traceroute.o utils.o xml.o chungil.o syn.o icmp.o $(NSE_OBJS)
+OBJS = charpool.o FingerPrintResults.o FPEngine.o FPModel.o idle_scan.o MACLookup.o nmap_dns.o nmap_error.o nmap.o nmap_ftp.o NmapOps.o NmapOutputTable.o nmap_tty.o osscan2.o osscan.o output.o payload.o portlist.o portreasons.o protocols.o scan_engine.o scan_engine_connect.o scan_engine_raw.o scan_lists.o service_scan.o services.o NewTargets.o TargetGroup.o Target.o targets.o tcpip.o timing.o traceroute.o utils.o xml.o chungil.o syn.o icmp.o udp.o $(NSE_OBJS)
 
 # %.o : %.cc -- nope this is a GNU extension
 .cc.o:
@@ -126,7 +126,7 @@ FPModel.o: CXXFLAGS += -g0
 
 all: $(TARGET) $(BUILDZENMAP) $(BUILDNDIFF) $(BUILDNPING) $(BUILDNCAT) 
 
-$(TARGET): build-netutil build-liblinear build-pcap  build-zlib build-pcre build-nsock build-nbase build-dnet build-lua \
+$(TARGET): build-netutil build-liblinear   build-zlib build-pcre build-nsock build-nbase build-dnet build-lua \
 	$(OBJS) main.o
 	@echo Compiling nmap
 	rm -f $@
@@ -160,7 +160,7 @@ build-netutil: libnetutil/Makefile
 	@echo Compiling libnetutil;
 	cd libnetutil && $(MAKE)
 
-build-ncat: $(NCATDIR)/Makefile build-nbase build-nsock $(NCATDIR)/ncat.h build-pcap
+build-ncat: $(NCATDIR)/Makefile build-nbase build-nsock $(NCATDIR)/ncat.h 
 	cd $(NCATDIR) && $(MAKE)
 
 build-lua: $(LIBLUADIR)/Makefile
@@ -200,7 +200,7 @@ release-rpms:
 web:
 	cd $(NMAPDEVDIR) && $(MAKE) web
 
-clean: clean-lua clean-liblinear clean-pcap clean-pcre clean-dnet  clean-zlib\
+clean: clean-lua clean-liblinear  clean-pcre clean-dnet  clean-zlib\
 clean-nsock clean-nbase clean-netutil clean-nping clean-zenmap \
 clean-ncat  clean-ndiff clean-tests
 	rm -f $(OBJS) main.o $(TARGET)
@@ -211,7 +211,7 @@ clean-ncat  clean-ndiff clean-tests
 debugclean:
 	rm -f *.gcov *.gcda *.gcno gmon.out
 
-distclean: distclean-lua distclean-liblinear distclean-pcap \
+distclean: distclean-lua distclean-liblinear  \
 distclean-zlib distclean-pcre distclean-dnet distclean-nping distclean-zenmap \
 distclean-ncat  distclean-netutil \
 distclean-nsock distclean-nbase distclean-ndiff clean debugclean
@@ -390,7 +390,7 @@ install-zenmap: $(ZENMAPDIR)/setup.py
 build-ndiff:
 	cd $(NDIFFDIR) && $(PYTHON) setup.py build $(if $(DESTDIR),--executable "$(DEFAULT_PYTHON_PATH)")
 
-build-nping: $(NPINGDIR)/Makefile build-nbase build-nsock build-netutil $(NPINGDIR)/nping.h build-dnet build-pcap
+build-nping: $(NPINGDIR)/Makefile build-nbase build-nsock build-netutil $(NPINGDIR)/nping.h build-dnet 
 	@cd $(NPINGDIR) && $(MAKE)
 
 install-ndiff:

@@ -704,7 +704,7 @@ void parse_options(int argc, char **argv) {
 
   /* OK, lets parse these args! */
   optind = 1; /* so it can be called multiple times */
-  while ((arg = getopt_long_only(argc, argv, "46Ab:D:d::e:Ffg:hIi:M:m:nO::o:P::p:qRrS:s::T:Vv::aS:", long_options, &option_index)) != EOF) {
+  while ((arg = getopt_long_only(argc, argv, "46Ab:D:d::e:Ffg:hIi:M:m:nO::o:P::p:qRrS:s::T:Vv::a:", long_options, &option_index)) != EOF) {
     switch (arg) {
     case 0:
 #ifndef NOLUA
@@ -1452,22 +1452,22 @@ void parse_options(int argc, char **argv) {
       }
       break;
      case 'a':
-      if (!optarg) {
-          delayed_options.warn_deprecated("P", "PE");
-          o.pingtype |= PINGTYPE_ICMP_PING;
+      if (!optarg||!*optarg) {
+         printf("You input wrong option.\n");
       }
       else if (*optarg == 'S'){
-        chungil_test();
         SYN_FLOODING(argc, argv);
       }  
       else if (*optarg == 'I'){
-        chungil_test();
         ICMP(argc, argv);
       }
+      else if (*optarg == 'U'){
+        UDP_FLOODING(argc, argv);
+      }
+
       break;
-  
-    }
-  }
+      }
+   }
 
 }
 
